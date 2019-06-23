@@ -25,6 +25,7 @@ import modeling
 import optimization
 import tokenization
 import tensorflow as tf
+import numpy as np
 
 flags = tf.flags
 
@@ -724,6 +725,8 @@ def input_fn_builder(features, seq_length, is_training, drop_remainder):
     all_input_mask.append(feature.input_mask)
     all_segment_ids.append(feature.segment_ids)
     all_label_ids.append(feature.label_id)
+  
+  all_label_ids = np.array(all_label_ids)
 
   def input_fn(params):
     """The actual input function."""
