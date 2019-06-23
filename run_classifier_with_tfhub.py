@@ -139,7 +139,7 @@ def model_fn_builder(num_labels, learning_rate, num_train_steps,
         predictions = np.array(predictions)'''
 
         thresholds = [0.5 for i in range(5)]
-        auc = tf.metrics.auc(label_ids, logits, thresholds=thresholds)
+        auc = tf.metrics.auc(label_ids, probabilities, thresholds=thresholds)
         loss = tf.metrics.mean(per_example_loss)
         return {
             "eval_accuracy": auc,
