@@ -71,12 +71,12 @@ def create_model(is_training, input_ids, input_mask, segment_ids, labels,
       # I.e., 0.1 dropout
       output_layer = tf.nn.dropout(output_layer, keep_prob=0.9)
 
-    logits = tf.matmul(output_layer, output_weights, transpose_b=True)
+        logits = tf.matmul(output_layer, output_weights, transpose_b=True)
     logits = tf.nn.bias_add(logits, output_bias)
     
     ''' since task is multi-label classification
         use sigmoid instead of softmax
-        and sigmoid cross entropy for per example loss calculation
+        and sigmoid cross entropy with logits for per example loss calculation
     '''
     #probabilities = tf.nn.softmax(logits, axis=-1)
     probabilities = tf.nn.sigmoid(logits)
@@ -126,8 +126,8 @@ def model_fn_builder(num_labels, learning_rate, num_train_steps,
     elif mode == tf.estimator.ModeKeys.EVAL:
 
       def metric_fn(per_example_loss, label_ids, logits):
-        predictions = tf.argmax(logits, axis=-1, output_type=tf.int32)
-        accuracy = tf.metrics.accuracy(label_ids, predictions)
+        #predictions = tf.argmax(logits, axis=-1, output_type=tf.int32)
+        accuracy = tf.metrics.accuracy(label_ids, logits)
         loss = tf.metrics.mean(per_example_loss)
         return {
             "eval_accuracy": accuracy,

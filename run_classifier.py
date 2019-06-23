@@ -383,12 +383,13 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
         input_ids=[0] * max_seq_length,
         input_mask=[0] * max_seq_length,
         segment_ids=[0] * max_seq_length,
-        label_id=0,
+        #label_id=0,
+        label_id=[0,0,0,0,0],
         is_real_example=False)
 
-  label_map = {}
+  '''label_map = {}
   for (i, label) in enumerate(label_list):
-    label_map[tuple(label)] = i
+    label_map[tuple(label)] = i'''
 
   tokens_a = tokenizer.tokenize(example.text_a)
   tokens_b = None
@@ -456,7 +457,7 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
   assert len(input_mask) == max_seq_length
   assert len(segment_ids) == max_seq_length
 
-  label_id = label_map[tuple(example.label)]
+  label_id = example.label
   if ex_index < 5:
     tf.logging.info("*** Example ***")
     tf.logging.info("guid: %s" % (example.guid))
