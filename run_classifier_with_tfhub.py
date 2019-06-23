@@ -142,8 +142,16 @@ def model_fn_builder(num_labels, learning_rate, num_train_steps,
         probs = tf.nn.sigmoid(logits)
         auc = tf.metrics.auc(labels=label_ids,predictions=probs, thresholds=thresholds)
         loss = tf.metrics.mean(per_example_loss)
+
+        from sklearn.metrics import roc_auc_score
+        probs = probs.numpy()
+        labels = labels.numpy()
+        print("Probs:", probs)
+        print("Labels", labels)
+        sklearn_auc = roc_auc_score(labels, probs)
         return {
-            "eval_accuracy": auc,
+            "tensorflow_auc": auc,
+            "sklearn_auc": sklearn_auc,
             "eval_loss": loss,
         }
 
