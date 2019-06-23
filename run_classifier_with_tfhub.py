@@ -127,32 +127,15 @@ def model_fn_builder(num_labels, learning_rate, num_train_steps,
     elif mode == tf.estimator.ModeKeys.EVAL:
 
       def metric_fn(per_example_loss, label_ids, logits):
+        ''' auc roc curve for multi-label classification '''
         #predictions = tf.argmax(logits, axis=-1, output_type=tf.int32)
-
-        '''predictions = []
-        for i in range(logits.shape[0]):
-          prediction = np.zeros(5, dtype=np.float32)
-          #threshold of 0.5
-          tensor = np.array(logits[i])
-          prediction[tensor>0.5] = 1.0
-          predictions.append(prediction)
-        predictions = np.array(predictions)'''
-
         thresholds = [0.5 for i in range(5)]
         probs = tf.nn.sigmoid(logits)
         auc = tf.metrics.auc(labels=label_ids,predictions=probs, thresholds=thresholds)
         loss = tf.metrics.mean(per_example_loss)
 
-        from sklearn.metrics import roc_auc_score
-        with tf.Session() as sess:
-          probs = sess.run(probs) 
-          labels = sess.run(labels) 
-        print("Probs:", probs)
-        print("Labels", labels)
-        sklearn_auc = roc_auc_score(labels, probs)
         return {
-            "tensorflow_auc": auc,
-            "sklearn_auc": sklearn_auc,
+            "auc": auc,
             "eval_loss": loss,
         }
 
