@@ -726,7 +726,7 @@ def input_fn_builder(features, seq_length, is_training, drop_remainder):
     all_segment_ids.append(feature.segment_ids)
     all_label_ids.append(feature.label_id)
   
-  all_label_ids = np.array(all_label_ids)
+  all_label_ids = np.array(all_label_ids, dtype=np.float32)
 
   def input_fn(params):
     """The actual input function."""
