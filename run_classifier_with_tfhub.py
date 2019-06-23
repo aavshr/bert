@@ -144,7 +144,7 @@ def model_fn_builder(num_labels, learning_rate, num_train_steps,
         loss = tf.metrics.mean(per_example_loss)
 
         from sklearn.metrics import roc_auc_score
-        with tf.Session as sess:
+        with tf.Session() as sess:
           probs = sess.run(probs) 
           labels = sess.run(labels) 
         print("Probs:", probs)
