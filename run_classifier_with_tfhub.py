@@ -130,17 +130,19 @@ def model_fn_builder(num_labels, learning_rate, num_train_steps,
         #predictions = tf.argmax(logits, axis=-1, output_type=tf.int32)
 
         '''predictions = []
-        for tensor in logits.numpy():
+        for i in range(logits.shape[0]):
           prediction = np.zeros(5, dtype=np.float32)
           #threshold of 0.5
+          tensor = np.array(logits[i])
           prediction[tensor>0.5] = 1.0
           predictions.append(prediction)
         predictions = np.array(predictions)'''
 
-        accuracy = tf.metrics.accuracy(label_ids, logits)
+        thresholds = [0.5 for i in range(5)]
+        auc = tf.metrics.auc(label_ids, logits, thresholds=thresholds)
         loss = tf.metrics.mean(per_example_loss)
         return {
-            "eval_accuracy": accuracy,
+            "eval_accuracy": auc,
             "eval_loss": loss,
         }
 
