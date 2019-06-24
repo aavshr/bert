@@ -131,11 +131,13 @@ def model_fn_builder(num_labels, learning_rate, num_train_steps,
         #predictions = tf.argmax(logits, axis=-1, output_type=tf.int32)
         thresholds = [0.5 for i in range(5)]
         probs = tf.nn.sigmoid(logits)
-        auc = tf.metrics.auc(labels=label_ids,predictions=probs, thresholds=thresholds)
+        auc_with_thresholds = tf.metrics.auc(labels=label_ids,predictions=probs, thresholds=thresholds)
+        auc = tf.metrics.auc(labels=label_ids, predictions=probs)
         loss = tf.metrics.mean(per_example_loss)
 
         return {
             "auc": auc,
+            "auc_with_thresholds":auc_with_thresholds,
             "eval_loss": loss,
         }
 
